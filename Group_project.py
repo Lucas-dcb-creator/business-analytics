@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Nov 20 17:25:21 2020
-
 @author: arianedeletang
 """
 
@@ -16,7 +15,7 @@ url = input("Please provide the link of the first page of a website on TrustPilo
 pages_to_scrape = int(input("How many pages are there to scrape: "))
 limit=datetime.date(2020,3,1)
 # sentiment_csv = "/Users/arianedeletang/Documents/Scolarité/HEC/M2/Business_analytics_Python/Fichiers Python/Web scrap/word_sentiment.csv"
-sentiment_csv = "/Users/xiaodanzhang/Google Drive/1. HEC - M2 - Digital/1. Businss Analytics Using Python/word_sentiment.csv"
+sentiment_csv = "C:/Users/Usuario/Documents/HEC-Major Digital/Business-analyticsonPython/project/word_sentiment.csv"
 
 
 def makesoup(url):
@@ -51,7 +50,7 @@ def sort_reviews():
                 date=datetime.date(int(year),int(month),int(day))
                 review = rev_data.find('p', class_ = 'review-content__text') 
                 if review is None:
-                    text="no text in this review"
+                    text=""
                 else:
                     text=review.text.replace('\n','')
                     text=text.replace('            ','')
@@ -89,28 +88,34 @@ def word_sentiment(word):
 
 # Compute aggregated sentiment score of all reviews before and all reviews after March, 1st            
 def main():
-    sentiment_before = 0 
+    sentiment_before = 0
     sentiment_after = 0
+    review_after = 0
     all_reviews=sort_reviews()
+    for sent in all_reviews:
+        if sent == "":
+            all_reviews.remove(sent)
     sentence_before = ' '.join(all_reviews[0]).lower()
     words_list_before = sentence_before.split()
+    review_before = len(all_reviews[0])
     sentence_after = ' '.join(all_reviews[1]).lower()
     words_list_after = sentence_after.split()
+    review_after = len(all_reviews[1])
     
     for word in words_list_before:
         sentiment_before = sentiment_before + int(word_sentiment(word))
     print("The sentiment score of all the reviews before "+str(limit)+" is: ",sentiment_before)
+    print("The average sentiment score per reviews before "+str(limit)+" is: ",round(sentiment_before/review_before, 1))
     
     for word in words_list_after:
         sentiment_after = sentiment_after + int(word_sentiment(word))
     print("The sentiment score of all the reviews after "+str(limit)+" is: ",sentiment_after)
+    print("The average sentiment score per reviews after  "+str(limit)+" is: ",round(sentiment_before/review_after, 1))
     
     return(sentiment_before, sentiment_after)
    
               
 print(main())
-
-
 
 
 
